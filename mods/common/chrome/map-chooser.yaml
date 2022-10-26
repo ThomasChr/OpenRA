@@ -12,6 +12,19 @@ Background@MAPCHOOSER_PANEL:
 			Height: 20
 			Text: Choose Map
 			Font: Bold
+        Label@ORDERBY_LABEL:
+            X: PARENT_RIGHT - 275
+            Y: 17
+            Width: 30
+            Height: 20
+            Font: Bold
+            Align: Center
+            Text: Order by:
+        DropDownButton@ORDERBY:
+            X: PARENT_RIGHT - 220
+            Y: 17
+            Width: 200
+            Height: 20
 		Button@SYSTEM_MAPS_TAB_BUTTON:
 			X: 20
 			Y: 48
