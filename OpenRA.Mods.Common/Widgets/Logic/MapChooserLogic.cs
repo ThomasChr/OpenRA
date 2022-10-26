@@ -83,8 +83,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		string category;
 		string mapFilter;
 
-		Func<MapPreview, long> orderByValue;
-		private string orderBySelectedText = "Players";
+		Func<MapPreview, long> orderByFunc;
 
 		[ObjectCreator.UseCtor]
 		internal MapChooserLogic(Widget widget, ModData modData, string initialMap,
@@ -273,37 +272,34 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 		void SetupOrderByDropdown(MapClassification tab, ScrollItemWidget itemTemplate)
 		{
-			if (orderByValue == null)
-			{
-				orderByValue = m => m.PlayerCount;
-			}
-
 			if (orderByDropdown == null) return;
 
-			var orderByValues = new Dictionary<string, Func<MapPreview, long>>
-			{
-				{ "Players", m => m.PlayerCount },
-				{ "MapDate", m => -m.ModifiedDate.Ticks },
-			};
+			var orderByDict = new Dictionary<string, Func<MapPreview, long>>();
+			orderByDict["Players"] = m => m.PlayerCount;
+			orderByDict["Map Date"] = m => -m.ModifiedDate.Ticks;
+
+			if (null == orderByFunc)
+				orderByFunc = orderByDict["Players"];
 
 			Func<string, ScrollItemWidget, ScrollItemWidget> setupItem = (o, template) =>
 			{
 				var item = ScrollItemWidget.Setup(template,
-					() => orderByValue == orderByValues[o],
-					() =>
-					{
-						orderBySelectedText = o;
-						orderByValue = orderByValues[o];
+					() => orderByFunc == orderByDict[o],
+					() => {
+						orderByFunc = orderByDict[o];
 						EnumerateMaps(tab, itemTemplate);
 					});
 				item.Get<LabelWidget>("LABEL").GetText = () => o;
+
 				return item;
 			};
 
 			orderByDropdown.OnClick = () =>
-				orderByDropdown.ShowDropDown("LABEL_DROPDOWN_TEMPLATE", 500, orderByValues.Keys, setupItem);
+				orderByDropdown.ShowDropDown("LABEL_DROPDOWN_TEMPLATE", 500, orderByDict.Keys, setupItem);
 
-			orderByDropdown.GetText = () => orderBySelectedText;
+			orderByDropdown.GetText = () => {
+				return orderByDict.FirstOrDefault(m => m.Value == orderByFunc).Key;
+			};
 		}
 
 		void EnumerateMaps(MapClassification tab, ScrollItemWidget template)
@@ -319,7 +315,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					(m.Title != null && m.Title.IndexOf(mapFilter, StringComparison.OrdinalIgnoreCase) >= 0) ||
 					(m.Author != null && m.Author.IndexOf(mapFilter, StringComparison.OrdinalIgnoreCase) >= 0) ||
 					m.PlayerCount == playerCountFilter)
-				.OrderBy(orderByValue)
+				.OrderBy(orderByFunc)
 				.ThenBy(m => m.Title);
 
 			scrollpanels[tab].RemoveChildren();
