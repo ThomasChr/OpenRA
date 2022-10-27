@@ -273,9 +273,11 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		{
 			if (orderByDropdown == null) return;
 
-			var orderByDict = new Dictionary<string, Func<MapPreview, long>>();
-			orderByDict["Players"] = m => m.PlayerCount;
-			orderByDict["Map Date"] = m => -m.ModifiedDate.Ticks;
+			var orderByDict = new Dictionary<string, Func<MapPreview, long>>()
+			{
+				{ "Players", m => m.PlayerCount },
+				{ "Map Date", m => -m.ModifiedDate.Ticks }
+			};
 
 			if (null == orderByFunc)
 				orderByFunc = orderByDict["Players"];
