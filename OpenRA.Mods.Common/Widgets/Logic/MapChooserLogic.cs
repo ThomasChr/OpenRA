@@ -279,7 +279,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				{ "Map Date", m => -m.ModifiedDate.Ticks }
 			};
 
-			if (null == orderByFunc)
+			if (orderByFunc == null)
 				orderByFunc = orderByDict["Players"];
 
 			Func<string, ScrollItemWidget, ScrollItemWidget> setupItem = (o, template) =>
