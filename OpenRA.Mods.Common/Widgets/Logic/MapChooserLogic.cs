@@ -286,10 +286,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			{
 				var item = ScrollItemWidget.Setup(template,
 					() => orderByFunc == orderByDict[o],
-					() => {
-						orderByFunc = orderByDict[o];
-						EnumerateMaps(tab, itemTemplate);
-					});
+					() => { orderByFunc = orderByDict[o]; EnumerateMaps(tab, itemTemplate); });
 				item.Get<LabelWidget>("LABEL").GetText = () => o;
 
 				return item;
@@ -298,9 +295,8 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			orderByDropdown.OnClick = () =>
 				orderByDropdown.ShowDropDown("LABEL_DROPDOWN_TEMPLATE", 500, orderByDict.Keys, setupItem);
 
-			orderByDropdown.GetText = () => {
-				return orderByDict.FirstOrDefault(m => m.Value == orderByFunc).Key;
-			};
+			orderByDropdown.GetText = () =>
+				orderByDict.FirstOrDefault(m => m.Value == orderByFunc).Key;
 		}
 
 		void EnumerateMaps(MapClassification tab, ScrollItemWidget template)
