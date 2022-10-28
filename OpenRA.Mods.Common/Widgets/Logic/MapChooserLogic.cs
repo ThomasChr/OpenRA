@@ -64,6 +64,12 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		[TranslationReference]
 		static readonly string DeleteAllMapsAccept = "delete-all-maps-accept";
 
+		[TranslationReference]
+		static readonly string OrderMapsByPlayers = "order-maps-players";
+
+		[TranslationReference]
+		static readonly string OrderMapsByDate = "order-maps-date";
+
 		readonly Widget widget;
 		readonly DropDownButtonWidget gameModeDropdown;
 		readonly DropDownButtonWidget orderByDropdown;
@@ -275,12 +281,12 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 			var orderByDict = new Dictionary<string, Func<MapPreview, long>>()
 			{
-				{ "Players", m => m.PlayerCount },
-				{ "Map Date", m => -m.ModifiedDate.Ticks }
+				{ modData.Translation.GetString(OrderMapsByPlayers), m => m.PlayerCount },
+				{ modData.Translation.GetString(OrderMapsByDate), m => -m.ModifiedDate.Ticks }
 			};
 
 			if (orderByFunc == null)
-				orderByFunc = orderByDict["Players"];
+				orderByFunc = orderByDict[modData.Translation.GetString(OrderMapsByPlayers)];
 
 			Func<string, ScrollItemWidget, ScrollItemWidget> setupItem = (o, template) =>
 			{
